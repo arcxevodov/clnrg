@@ -1,10 +1,8 @@
 package main
 
-// #include <unistd.h>
-import "C"
-
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"time"
 
@@ -15,23 +13,45 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func updateRam(ram *widget.Label) {
-	bTotal := C.sysconf(C._SC_PHYS_PAGES) * C.sysconf(C._SC_PAGE_SIZE)
-	gbTotal := float64(bTotal) / 1024 / 1024 / 1024
-	fmtTotal := fmt.Sprintf("Total RAM: %.1f GB", gbTotal)
-
-	bFree := C.sysconf(C._SC_AVPHYS_PAGES) * C.sysconf(C._SC_PAGE_SIZE)
-	gbFree := float64(bFree) / 1024 / 1024 / 1024
-	fmtFree := fmt.Sprintf("Available RAM: %.1f GB", gbFree)
-
-	ram.SetText(fmt.Sprintf("%s | %s", fmtTotal, fmtFree))
-}
+const (
+	NoRootError  = 1
+	UnknownError = 2
+)
 
 func main() {
 	a := app.New()
-	w := a.NewWindow("clnr")
 
+	_, err := exec.Command("clnr", "-i").Output()
+	if err != nil {
+		if err.Error() == "exec: \"clnr\": executable file not found in $PATH" {
+			noClnr(a).Show()
+		} else if err.Error() == "exit status 1" {
+			fmt.Println("\033[0;31mPlease run this program as superuser")
+			os.Exit(NoRootError)
+		} else {
+			fmt.Println("Unknown Error: ", err)
+			os.Exit(UnknownError)
+		}
+	} else {
+		mainWidget(a).Show()
+	}
+
+	a.Run()
+}
+
+func updateRam(ram *widget.Label) {
+	out, err := exec.Command("clnr", "-i").Output()
+	if err != nil {
+		fmt.Println("Unknown Error: ", err)
+		os.Exit(UnknownError)
+	}
+	ram.SetText(string(out))
+}
+
+func mainWidget(a fyne.App) fyne.Window {
+	w := a.NewWindow("clnr")
 	ram := widget.NewLabel("")
+
 	updateRam(ram)
 	go func() {
 		for range time.Tick(time.Second) {
@@ -40,20 +60,17 @@ func main() {
 	}()
 
 	clean := widget.NewButton("Clean RAM", func() {
-		out, err := exec.Command("clnr", "-r", "-s").Output()
+		info, err := exec.Command("clnr", "-r", "-s").Output()
 		if err != nil {
-			if err.Error() == "exec: \"clnr\": executable file not found in $PATH" {
-				noClnr(a).Show()
-			}
+			fmt.Println("Unknown Error: ", err)
+			os.Exit(UnknownError)
 		}
-		cleanSucsessful(a, string(out)).Show()
+		cleanSucsessful(a, string(info)).Show()
 	})
 
 	content := container.New(layout.NewVBoxLayout(), ram, layout.NewSpacer(), clean)
 	w.SetContent(container.New(layout.NewVBoxLayout(), content))
-	w.Show()
-
-	a.Run()
+	return w
 }
 
 func noClnr(a fyne.App) fyne.Window {

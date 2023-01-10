@@ -1,4 +1,5 @@
 .DEFAULT_GOAL := build
+SHELL := /bin/bash
 
 fmt:
 	go fmt ./...
@@ -15,9 +16,18 @@ build: vet
 .PHONY:build
 
 install:
-	cp clnrg /usr/bin
+	@if [[ ! -f /usr/local/clnr/clnr ]]; then \
+		echo -e "\033[0;31mExecutable file clnr not found. Please run install_clnr.sh "; \
+	else \
+		mkdir /usr/local/clnrg; \
+		cp clnrg /usr/local/clnrg; \
+		ln -sf /usr/local/clnrg/clnrg /usr/local/sbin/clnrg; \
+		ln -sf /usr/local/clnrg/clnrg /usr/local/bin/clnrg; \
+	fi
 .PHONY:install
 
 uninstall:
-	rm /usr/bin/clnrg
+	rm -r /usr/local/clnrg
+	rm /usr/local/sbin/clnrg
+	rm /usr/local/bin/clnrg
 .PHONY:uninstall
