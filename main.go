@@ -5,7 +5,6 @@ import "C"
 
 import (
 	"fmt"
-	"log"
 	"os/exec"
 	"time"
 
@@ -44,7 +43,7 @@ func main() {
 		out, err := exec.Command("clnr", "-r", "-s").Output()
 		if err != nil {
 			if err.Error() == "exec: \"clnr\": executable file not found in $PATH" {
-				installPrompt(a).Show()
+				noClnr(a).Show()
 			}
 		}
 		cleanSucsessful(a, string(out)).Show()
@@ -57,22 +56,10 @@ func main() {
 	a.Run()
 }
 
-func installPrompt(a fyne.App) fyne.Window {
+func noClnr(a fyne.App) fyne.Window {
 	w := a.NewWindow("clnr not found")
-	prompt := widget.NewLabel("\"clnr\" executable file not found. Would you install this?")
-	yButton := widget.NewButton("Yes", func() {
-		cmd := "curl -fsSL https://github.com/arcxevodov/clnr/releases/download/v0.1.0/clnr > /usr/bin/clnr; chmod +x /usr/bin/clnr"
-		err := exec.Command("bash", "-c", cmd).Run()
-		if err != nil {
-			log.Fatal(err)
-		}
-		w.Close()
-	})
-	nButton := widget.NewButton("No", func() {
-		w.Close()
-	})
-	content := container.New(layout.NewVBoxLayout(), prompt, layout.NewSpacer(), yButton, nButton)
-	w.SetContent(container.New(layout.NewVBoxLayout(), content))
+	prompt := widget.NewLabel("\"clnr\" executable file not found. Please run install_clnr.sh")
+	w.SetContent(prompt)
 	return w
 }
 
