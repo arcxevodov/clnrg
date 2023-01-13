@@ -1,4 +1,4 @@
-module clnr-gui
+module clnrg
 
 go 1.19
 
