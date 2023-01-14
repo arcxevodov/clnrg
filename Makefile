@@ -20,6 +20,7 @@ install:
 		echo -e "\033[0;31mExecutable file clnr not found. Please run install_clnr.sh "; \
 	else \
 		mkdir /usr/local/clnrg; \
+		cp -r locales /usr/local/clnrg; \
 		cp clnrg /usr/local/clnrg; \
 		ln -sf /usr/local/clnrg/clnrg /usr/local/sbin/clnrg; \
 		ln -sf /usr/local/clnrg/clnrg /usr/local/bin/clnrg; \
