@@ -1,0 +1,8 @@
+{
+    "NoRoot": "Пожалуйста, запустите программу от имени суперпользователя",
+    "UnknownError": "Неизвестная ошибка: ",
+    "NoClnrTitle": "clnr не найден",
+    "CleanSuccessfulTitle": "Очистка...",
+    "ClnrNotFound": "\"clnr\" не найден. Пожалуйста, запустите install_clnr.sh",
+    "CleanRamButton": "Очистка RAM"
+}

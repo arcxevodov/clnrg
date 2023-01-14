@@ -1,0 +1,8 @@
+{
+    "NoRoot": "Please run this program as superuser",
+    "UnknownError": "Unknown Error: ",
+    "NoClnrTitle": "clnr not found",
+    "CleanSuccessfulTitle": "Cleaning...",
+    "ClnrNotFound": "\"clnr\" executable file not found. Please run install_clnr.sh",
+    "CleanRamButton": "Clean RAM"
+}
