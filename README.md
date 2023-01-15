@@ -14,6 +14,12 @@ make
 sudo make install
 ```
 
+## Флаги
+
+```bash
+-lang [ru, en]: Локализация
+```
+
 ---
 
 ## GUI linux Cleanup Tool <img src="https://media.tenor.com/fP_RQeMnWecAAAAj/penguin-wiping-floor.gif" width="20">
@@ -28,4 +34,10 @@ cd clnr
 chmod +x install_clnr.sh # If clnr is not installed
 make
 sudo make install
+```
+
+## Flags
+
+```bash
+-lang [ru, en]: Localization
 ```
